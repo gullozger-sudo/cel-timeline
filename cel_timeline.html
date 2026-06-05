@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEL — Cities of Expanding Light | Project Timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple:    #534AB7;
+    --purple-lt: #EEEDFE;
+    --teal:      #0F6E56;
+    --teal-lt:   #E1F5EE;
+    --coral:     #993C1D;
+    --coral-lt:  #FAECE7;
+    --amber:     #854F0B;
+    --amber-lt:  #FAEEDA;
+    --blue:      #185FA5;
+    --blue-lt:   #E6F1FB;
+    --gray:      #5F5E5A;
+    --gray-lt:   #F1EFE8;
+    --new:       #1D9E75;
+    --new-lt:    #E1F5EE;
+    --gold:      #EF9F27;
+    --gold-lt:   #FFF8EC;
+    --page:      #FAFAF8;
+    --text:      #2C2C2A;
+    --mid:       #888780;
+    --border:    #E0DED8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--page);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--purple-lt);
+    border-bottom: 1px solid rgba(83,74,183,.2);
+    padding: 36px 48px 28px;
+  }
+  header .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(24px, 4vw, 42px);
+    color: var(--purple);
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  header .meta {
+    font-size: 13px;
+    color: var(--mid);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+  }
+  header .meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    padding: 14px 48px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--mid);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ── TIMELINE WRAPPER ── */
+  .timeline-outer {
+    padding: 0 48px 64px;
+    overflow-x: auto;
+  }
+
+  /* ── HORIZONTAL SPINE ── */
+  .spine-wrap {
+    position: relative;
+    min-width: 900px;
+    margin: 0 auto;
+    padding: 320px 0 320px;
+  }
+
+  .spine {
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--purple-lt), var(--purple), var(--purple), var(--purple-lt));
+    transform: translateY(-50%);
+  }
+  .spine::after {
+    content: '';
+    position: absolute;
+    right: -1px; top: 50%;
+    transform: translateY(-50%);
+    border-left: 10px solid var(--purple);
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+  }
+
+  /* year markers */
+  .year-marker {
+    position: absolute;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    pointer-events: none;
+  }
+  .year-marker .year-line {
+    width: 1px;
+    height: 260px;
+    background: var(--border);
+    margin-top: -130px;
+  }
+  .year-marker .year-label {
+    position: absolute;
+    top: calc(50% - 145px);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    color: var(--mid);
+    background: var(--page);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* ── PHASE NODES ── */
+  .phase {
+    position: absolute;
+    top: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .phase-dot {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px currentColor;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    margin: -9px 0;
+  }
+
+  .connector {
+    width: 2px;
+    flex-shrink: 0;
+  }
+
+  /* Cards above spine */
+  .phase.above {
+    flex-direction: column-reverse;
+    top: 50%;
+  }
+  .phase.above .phase-dot { margin-bottom: -9px; margin-top: 0; }
+  .phase.above .connector { order: -1; }
+  .phase.above .phase-card { order: -2; margin-bottom: 0; }
+
+  .phase-card {
+    width: 195px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+    transition: transform .2s, box-shadow .2s;
+    cursor: default;
+  }
+  .phase-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  }
+
+  .card-header {
+    padding: 10px 12px 8px;
+    border-left: 4px solid;
+  }
+  .card-header .phase-num {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    opacity: .7;
+    margin-bottom: 2px;
+  }
+  .card-header .phase-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    line-height: 1.25;
+  }
+  .card-header .phase-date {
+    font-size: 10px;
+    margin-top: 3px;
+    opacity: .65;
+    font-weight: 500;
+  }
+
+  .card-body {
+    padding: 10px 12px;
+    background: white;
+  }
+  .card-body ul {
+    list-style: none;
+    margin-bottom: 8px;
+  }
+  .card-body ul li {
+    font-size: 11px;
+    color: #555;
+    line-height: 1.45;
+    padding: 2px 0 2px 12px;
+    position: relative;
+    border-bottom: 1px solid #f0eeea;
+  }
+  .card-body ul li:last-child { border-bottom: none; }
+  .card-body ul li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--mid);
+  }
+
+  .milestones { margin-top: 6px; }
+  .milestone {
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 3px 6px;
+    border-radius: 4px;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    line-height: 1.35;
+  }
+  .milestone.star { background: var(--gold-lt); color: var(--amber); }
+  .milestone.diamond { background: var(--purple-lt); color: var(--purple); }
+  .milestone.question { background: var(--teal-lt); color: var(--teal); }
+  .milestone .icon { flex-shrink: 0; margin-top: 1px; }
+
+  /* slow travel badge */
+  .slow-travel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--new);
+    background: var(--new-lt);
+    border: 1px dashed var(--new);
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-bottom: 6px;
+  }
+
+  /* ── BOTTOM NOTES ── */
+  .notes {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 48px 48px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .note-card {
+    border-radius: 10px;
+    padding: 16px;
+    border-left: 4px solid;
+  }
+  .note-card h3 { font-size: 12px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .06em; }
+  .note-card p, .note-card li { font-size: 12px; line-height: 1.55; color: #555; }
+  .note-card ul { list-style: none; }
+  .note-card ul li { padding: 2px 0 2px 14px; position: relative; }
+  .note-card ul li::before { content: '→'; position: absolute; left: 0; color: var(--mid); font-size: 10px; top: 3px; }
+
+  footer {
+    background: var(--gray-lt);
+    border-top: 1px solid var(--border);
+    padding: 16px 48px;
+    font-size: 11px;
+    color: var(--mid);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 600px) {
+    header, .legend, .timeline-outer, .notes, footer { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">EEA Grants · Polish–Norwegian Cultural Collaboration · Working Document 2026</div>
+  <h1>CEL — Cities of Expanding Light<br><em style="font-size:.65em;color:var(--mid)">Project Timeline 2027–2030</em></h1>
+  <div class="meta">
+    <span>🇵🇱 Fundacja Rozwoju Teatru NOWA FALA</span>
+    <span>🇳🇴 GullBakken</span>
+    <span>🇳🇴 Haugen Produksjoner</span>
+    <span style="color:var(--mid)">Updated June 2026</span>
+  </div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot" style="background:var(--purple)"></span> Phase</div>
+  <div class="legend-item"><span style="font-weight:700;color:var(--amber)">★</span> Milestone</div>
+  <div class="legend-item"><span style="font-weight:700;color:var(--purple)">◆</span> Open decision</div>
+  <div class="legend-item"><span style="font-weight:700;color:var(--teal)">?</span> Open question</div>
+  <div class="legend-item"><span style="font-size:11px;font-weight:600;color:var(--new);background:var(--new-lt);padding:1px 6px;border-radius:3px;border:1px dashed var(--new)">🚂 Slow travel</span> Journey as artistic research</div>
+</div>
+
+<div class="timeline-outer">
+<div class="spine-wrap" id="spine-wrap">
+  <div class="spine"></div>
+
+  <!-- Year markers -->
+  <div class="year-marker" style="left:2%"><div class="year-line"></div><div class="year-label">2027</div></div>
+  <div class="year-marker" style="left:36%"><div class="year-line"></div><div class="year-label">2028</div></div>
+  <div class="year-marker" style="left:68%"><div class="year-line"></div><div class="year-label">2029</div></div>
+  <div class="year-marker" style="left:97%"><div class="year-line"></div><div class="year-label">2030</div></div>
+
+  <!-- PHASE 1 — Warsaw first meeting -->
+  <div class="phase above" style="left:8%">
+    <div class="phase-card">
+      <div class="card-header" style="background:var(--purple-lt);border-color:var(--purple);color:var(--purple)">
+        <div class="phase-num">Phase 1</div>
+        <div class="phase-title">First meeting<br>Warsaw</div>
+        <div class="phase-date">Autumn 2027</div>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>U:NEW Dance Wave Festival</li>
+          <li>GullBakken &amp; Haugen Produksjoner present existing works</li>
+          <li>Open workshops: 5–6 days, 18:00–19:30</li>
+          <li>2-week residency in Warsaw</li>
+          <li>Total stay ~3–3.5 weeks</li>
+          <li style="color:var(--teal);font-weight:500">No slow travel on this trip</li>
+        </ul>
+        <div class="milestones">
+          <div class="milestone star"><span class="icon">★</span> Joint artistic research begins</div>
+          <div class="milestone star"><span class="icon">★</span> Workshop programme launches</div>
+          <div class="milestone diamond"><span class="icon">◆</span> GullBakken: how many artists travelling?</div>
+        </div>
+      </div>
+    </div>
+    <div class="connector" style="height:48px;background:var(--purple);opacity:.3"></div>
+    <div class="phase-dot" style="color:var(--purple);background:var(--purple)"></div>
+  </div>
+
+  <!-- PHASE 2 — Norway residency -->
+  <div class="phase" style="left:30%; top:50%">
+    <div class="phase-dot" style="color:var(--teal);background:var(--teal)"></div>
+    <div class="connector" style="height:48px;background:var(--teal);opacity:.3"></div>
+    <div class="phase-card">
+      <div class="card-header" style="background:var(--teal-lt);border-color:var(--teal);color:var(--teal)">
+        <div class="phase-num">Phase 2</div>
+        <div class="phase-title">Residency<br>in Norway</div>
+        <div class="phase-date">Jun–Aug 2028</div>
+      </div>
+      <div class="card-body">
+        <div class="slow-travel-badge">🚂 Polish group: slow travel north</div>
+        <ul>
+          <li>Warsaw → Mo i Rana overland journey</li>
+          <li>Residency at Nordland Teater, Mo i Rana</li>
+          <li>Site-specific research &amp; video work</li>
+          <li>Dance film shooting during journey</li>
+          <li>Open workshops in Norway</li>
+        </ul>
+        <div class="milestones">
+          <div class="milestone star"><span class="icon">★</span> Slow travel archive created</div>
+          <div class="milestone star"><span class="icon">★</span> Dance film material collected</div>
+          <div class="milestone diamond"><span class="icon">◆</span> Mo i Rana only, or + Tromsø?</div>
+          <div class="milestone question"><span class="icon">?</span> Inquiry to Nordland Teater — urgent</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 — Warsaw creation + premiere -->
+  <div class="phase above" style="left:54%">
+    <div class="phase-card">
+      <div class="card-header" style="background:var(--coral-lt);border-color:var(--coral);color:var(--coral)">
+        <div class="phase-num">Phase 3</div>
+        <div class="phase-title">Collaborative creation<br>&amp; premiere, Warsaw</div>
+        <div class="phase-date">September 2028</div>
+      </div>
+      <div class="card-body">
+        <div class="slow-travel-badge">🚂 Norwegian group: slow travel south</div>
+        <ul>
+          <li>Norwegian group travels overland to Warsaw</li>
+          <li>Possible 1-week retreat outside Warsaw (nature/landscape)</li>
+          <li>Full collaborative creation period</li>
+          <li>Premiere of shared performance at festival</li>
+          <li>Exhibition: paintings, video, archives</li>
+          <li>Dance film screening</li>
+        </ul>
+        <div class="milestones">
+          <div class="milestone star"><span class="icon">★</span> World premiere of shared work</div>
+          <div class="milestone star"><span class="icon">★</span> Dance film premiered</div>
+          <div class="milestone diamond"><span class="icon">◆</span> Number of GullBakken artists TBC</div>
+        </div>
+      </div>
+    </div>
+    <div class="connector" style="height:48px;background:var(--coral);opacity:.3"></div>
+    <div class="phase-dot" style="color:var(--coral);background:var(--coral)"></div>
+  </div>
+
+  <!-- TOURING -->
+  <div class="phase" style="left:68%; top:50%">
+    <div class="phase-dot" style="color:var(--amber);background:var(--amber)"></div>
+    <div class="connector" style="height:48px;background:var(--amber);opacity:.3"></div>
+    <div class="phase-card">
+      <div class="card-header" style="background:var(--amber-lt);border-color:var(--amber);color:var(--amber)">
+        <div class="phase-num">Touring</div>
+        <div class="phase-title">Norway &amp; Poland</div>
+        <div class="phase-date">Late 2028 – early 2029</div>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Vinterlys — Mo i Rana</li>
+          <li>Vårscenefest — Tromsø</li>
+          <li>Stamsund Int. Theatre Festival</li>
+          <li>Bodø Biennale</li>
+          <li>CODA — Oslo (October)</li>
+          <li>Polish touring venues TBC</li>
+          <li>Dance Festival Barents — Hammerfest</li>
+        </ul>
+        <div class="milestones">
+          <div class="milestone star"><span class="icon">★</span> Norwegian touring circuit</div>
+          <div class="milestone diamond"><span class="icon">◆</span> Applications needed now</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 — Independent performances -->
+  <div class="phase above" style="left:83%">
+    <div class="phase-card">
+      <div class="card-header" style="background:var(--purple-lt);border-color:var(--purple);color:var(--purple)">
+        <div class="phase-num">Phase 4</div>
+        <div class="phase-title">Independent final<br>performances</div>
+        <div class="phase-date">Jan–Sep 2029</div>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Each group creates own performance in own country</li>
+          <li>One artist from partner group co-creates</li>
+          <li>Both shown at U:NEW Warsaw, Sep 2029</li>
+          <li>Artist talks, community events</li>
+          <li>Audience as participants</li>
+        </ul>
+        <div class="milestones">
+          <div class="milestone star"><span class="icon">★</span> Polish independent premiere</div>
+          <div class="milestone star"><span class="icon">★</span> Norwegian independent premiere</div>
+          <div class="milestone star"><span class="icon">★</span> Both shown at Warsaw festival</div>
+        </div>
+      </div>
+    </div>
+    <div class="connector" style="height:48px;background:var(--purple);opacity:.3"></div>
+    <div class="phase-dot" style="color:var(--purple);background:var(--purple)"></div>
+  </div>
+
+  <!-- PHASE 5 — Toolbook -->
+  <div class="phase" style="left:95%; top:50%">
+    <div class="phase-dot" style="color:var(--gray);background:var(--gray)"></div>
+    <div class="connector" style="height:48px;background:var(--gray);opacity:.3"></div>
+    <div class="phase-card">
+      <div class="card-header" style="background:var(--gray-lt);border-color:var(--gray);color:var(--gray)">
+        <div class="phase-num">Phase 5</div>
+        <div class="phase-title">Toolbook &amp;<br>publication</div>
+        <div class="phase-date">Oct 2029 – Feb 2030</div>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Alexandra + dramaturg compile all process material</li>
+          <li>Research publication finalised</li>
+          <li>Distributed to partners and field</li>
+        </ul>
+        <div class="milestones">
+          <div class="milestone star"><span class="icon">★</span> Toolbook published</div>
+          <div class="milestone star"><span class="icon">★</span> Project complete</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- spine-wrap -->
+</div><!-- timeline-outer -->
+
+<!-- NOTES -->
+<div class="notes">
+  <div class="note-card" style="background:var(--teal-lt);border-color:var(--teal)">
+    <h3 style="color:var(--teal)">🚂 Slow travel — when</h3>
+    <ul>
+      <li>Phase 2: Polish group travels overland northward to Norway (Warsaw → Mo i Rana)</li>
+      <li>Phase 3: Norwegian group travels overland southward to Warsaw for collaborative creation</li>
+      <li>Phase 1: No slow travel — first meeting is direct travel</li>
+    </ul>
+  </div>
+  <div class="note-card" style="background:var(--gold-lt);border-color:var(--gold)">
+    <h3 style="color:var(--amber)">◆ Key decisions needed now</h3>
+    <ul>
+      <li>Number of GullBakken artists travelling (all phases)</li>
+      <li>Norway residency: Mo i Rana only, or + Tromsø?</li>
+      <li>Contact Nordland Teater immediately — long-term planning</li>
+      <li>Festival applications for touring: deadlines approaching</li>
+      <li>Lead applicant for EEA application not yet confirmed</li>
+    </ul>
+  </div>
+  <div class="note-card" style="background:var(--purple-lt);border-color:var(--purple)">
+    <h3 style="color:var(--purple)">Partners involved</h3>
+    <ul>
+      <li>NOWA FALA — Warsaw (PL lead)</li>
+      <li>GullBakken — Norway</li>
+      <li>Haugen Produksjoner — Tromsø</li>
+      <li>Nordland Teater — Mo i Rana (TBC)</li>
+      <li>CPK — Warsaw (TBC)</li>
+      <li>Dance Festival Barents — Hammerfest</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <span>CEL — Cities of Expanding Light · EEA Grants application in preparation · Working document June 2026</span>
+  <span>★ milestone &nbsp;·&nbsp; ◆ open decision &nbsp;·&nbsp; ? open question</span>
+</footer>
+
+</body>
+</html>
