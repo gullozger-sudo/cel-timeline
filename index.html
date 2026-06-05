@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEL — Cities of Expanding Light | Project Timeline</title>
+</head>
+<body>
+<script>
+(function() {
+  var correct = "EEAisthefutur";
+  var stored = sessionStorage.getItem("cel_auth");
+  if (stored !== correct) {
+    var pwd = prompt("CEL — Cities of Expanding Light\nEnter password:");
+    if (pwd !== correct) {
+      document.write("<div style='font-family:sans-serif;padding:60px;text-align:center'><h2>Access denied</h2><p>Wrong password.</p></div>");
+      document.close();
+      throw new Error("auth");
+    }
+    sessionStorage.setItem("cel_auth", correct);
+  }
+})();
+</script>
+<p>Loading timeline... If this page stays blank, the full file needs to be uploaded.</p>
+</body>
+</html>
